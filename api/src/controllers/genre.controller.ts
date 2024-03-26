@@ -18,7 +18,10 @@ export const getAllGenres= async (req: Request, res: Response)=>{
             ok : true,
             genres : allGenres
         })
-    } catch (error) {
-        
+    } catch (error) {        
+        if (error instanceof Error) {
+            console.log(error)
+            return res.status(500).json({message: error.message})
+        }
     }
 }
