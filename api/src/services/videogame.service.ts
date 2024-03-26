@@ -39,7 +39,9 @@ export const getVideoGamesApi= async ( api : string) =>{
                 }
                 listVideogame.push(videoGameReturn);
             })
-            await getVideoGamesApiPage(`https://api.rawg.io/api/games?key=${api}&page=2`,listVideogame);
+            for (let i = 2; i <= 5; i++) {
+                await getVideoGamesApiPage(`https://api.rawg.io/api/games?key=${api}&page=${i}`,listVideogame);              
+            }
             await createListVideoGames(listVideogame)
             return listVideogame;
         }
@@ -49,6 +51,7 @@ export const getVideoGamesApi= async ( api : string) =>{
 
 export const getVideoGamesApiPage = async (api: string, listVideogame:any)=>{
     const ApiPage= await axios(api);
+    console.log(listVideogame.length)
     if (ApiPage) {
         const data= ApiPage.data.results;
         data.map((videogameObj : videogameApiInterface)=>{
