@@ -9,9 +9,8 @@ export const getAllVideogames =async ( req : Request, res : Response )=>{
         const allVideogames=await videogame.find({relations: {
             genres: true,
         }});
-        console.log(allVideogames.length)
         if (allVideogames.length === 0) {
-            const apikeyVideogame = process.env.apikeyVidogame ? process.env.apikeyVidogame.toString() : "";
+            const apikeyVideogame = process.env.apikeyVideogame ? process.env.apikeyVideogame.toString() : "";
             const videogamesApi= await getVideoGamesApi(apikeyVideogame)
             return res.status(200).json(videogamesApi)
         }

@@ -40,7 +40,6 @@ export const getVideoGamesApi= async ( api : string) =>{
                 listVideogame.push(videoGameReturn);
             })
             await getVideoGamesApiPage(`https://api.rawg.io/api/games?key=${api}&page=2`,listVideogame);
-            console.log(listVideogame)
             await createListVideoGames(listVideogame)
             return listVideogame;
         }
