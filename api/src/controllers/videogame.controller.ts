@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { videogame } from "../entities/videogame";
+import { genre } from "../entities/genre";
 import { getVideoGamesApi } from "../services/videogame.service";
 import dotenv from "dotenv";
+import { genrestInterface } from "../types/genresTypes";
 dotenv.config()
 
 export const getAllVideogames =async ( req : Request, res : Response )=>{
@@ -24,4 +26,26 @@ export const getAllVideogames =async ( req : Request, res : Response )=>{
             return res.status(500).json({message: error.message})
         }
     }
+}
+
+export const createVideogame = async( req : Request, res: Response )=>{
+    const { id, name, descripcion , background_image, rating, released, platforms, genres }=req.body
+    let genreslist : Array<genre>= new Array<genre>();
+    genres.map(async ( genreReq : string )=>{
+        const genreEnt = await genre.findOneBy({ nombre : genreReq})
+        const genreEntityObj = new genre()
+        genreEntityObj.id= genreEnt?.id ? genreEnt.id : ""
+        genreEntityObj.nombre= genreEnt?.nombre ? genreEnt.nombre : ""
+        genreslist.push(genreEntityObj)
+    })
+    const ObjectVideoGame=new videogame();                                
+    ObjectVideoGame.id= id.toString()
+    ObjectVideoGame.nombre= name
+    ObjectVideoGame.image = background_image
+    ObjectVideoGame.rating = rating
+    ObjectVideoGame.fecha_lanzamiento = released
+    ObjectVideoGame.plataformas = platforms
+    ObjectVideoGame.descripcion = descripcion
+    ObjectVideoGame.genres = genreslist
+    // await ObjectVideoGame.save()
 }

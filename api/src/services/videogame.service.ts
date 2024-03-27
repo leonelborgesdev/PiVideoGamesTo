@@ -84,26 +84,29 @@ export const getVideoGamesApiPage = async (api: string, listVideogame:any)=>{
         })
     }
 }
-export const createListVideoGames= async(listVideogame:Array<videogameInterfaceModel>)=>{
-    listVideogame.map(async (videogameObj : videogameInterfaceModel)=>{
-        let genreslist : Array<genre>= new Array<genre>();
-        videogameObj.genres.map((genreObj : genrestInterface)=>{
-            const genreEntityObj = new genre()
-            genreEntityObj.id= genreObj.id
-            genreEntityObj.nombre= genreObj.name
-            genreslist.push(genreEntityObj)
-        })
-
-        const ObjectVideoGame=new videogame();
-                            
-        ObjectVideoGame.id= videogameObj.id.toString()
-        ObjectVideoGame.nombre= videogameObj.name
-        ObjectVideoGame.image = videogameObj.background_image
-        ObjectVideoGame.rating = videogameObj.rating
-        ObjectVideoGame.fecha_lanzamiento = videogameObj.released
-        ObjectVideoGame.plataformas = videogameObj.platforms
-        ObjectVideoGame.descripcion = ""
-        ObjectVideoGame.genres = genreslist
-        await ObjectVideoGame.save()
+export const createListVideoGames= async( listVideogame : Array < videogameInterfaceModel > )=>{
+    listVideogame.map(
+        async (videogameObj : videogameInterfaceModel ) => {
+            await saveVideoGameObj(videogameObj);
+        }
+    )
+}
+export const saveVideoGameObj = async ( videogameObj : videogameInterfaceModel)=>{
+    let genreslist : Array<genre>= new Array<genre>();
+    videogameObj.genres.map((genreObj : genrestInterface)=>{
+        const genreEntityObj = new genre()
+        genreEntityObj.id= genreObj.id
+        genreEntityObj.nombre= genreObj.name
+        genreslist.push(genreEntityObj)
     })
+    const ObjectVideoGame=new videogame();                                
+    ObjectVideoGame.id= videogameObj.id.toString()
+    ObjectVideoGame.nombre= videogameObj.name
+    ObjectVideoGame.image = videogameObj.background_image
+    ObjectVideoGame.rating = videogameObj.rating
+    ObjectVideoGame.fecha_lanzamiento = videogameObj.released
+    ObjectVideoGame.plataformas = videogameObj.platforms
+    ObjectVideoGame.descripcion = ""
+    ObjectVideoGame.genres = genreslist
+    await ObjectVideoGame.save()
 }
