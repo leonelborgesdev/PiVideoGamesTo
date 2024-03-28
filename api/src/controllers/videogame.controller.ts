@@ -46,7 +46,6 @@ export const createVideogame = async( req : Request, res: Response )=>{
         genreslist.push(genreEntityObj);
     })
     const validateName= await videogame.findOneBy({ nombre : name})
-    console.log("validatename",validateName)
     if (validateName) {
         return res.status(200).json({ ok : false, message : `El video juego ${name} ya existe`})
     }else{
