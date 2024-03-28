@@ -42,11 +42,15 @@ export const getVideoGamesApi= async ( api : string) =>{
             for (let i = 2; i <= 5; i++) {
                 await getVideoGamesApiPage(`https://api.rawg.io/api/games?key=${api}&page=${i}`,listVideogame);              
             }
-            await createListVideoGames(listVideogame)
-            return listVideogame;
+            const saveVideogames = await createListVideoGames(listVideogame)
+            if (saveVideogames.ok) {
+                return { ok : true , listVideogame};
+            }else{
+                return { ok : false , listVideogame : [], message : saveVideogames.message};
+            }
         }
     }
-    return []
+    return { ok : false , listVideogame : [], message : "error consulte con su administrador"};
 }
 
 export const getVideoGamesApiPage = async (api: string, listVideogame:any)=>{
@@ -85,11 +89,18 @@ export const getVideoGamesApiPage = async (api: string, listVideogame:any)=>{
     }
 }
 export const createListVideoGames= async( listVideogame : Array < videogameInterfaceModel > )=>{
-    listVideogame.map(
-        async (videogameObj : videogameInterfaceModel ) => {
-            await saveVideoGameObj(videogameObj);
-        }
-    )
+    const genresCount= await genre.count();
+    console.log(genresCount)
+    if (genresCount !=0) {
+        listVideogame.map(
+            async (videogameObj : videogameInterfaceModel ) => {
+                await saveVideoGameObj(videogameObj);
+            }
+        )
+        return {ok: true , message: "todo bien"};
+    }else{
+        return {ok : false , message: "No se encontro ningun genero en la base de datos"};
+    }
 }
 export const saveVideoGameObj = async ( videogameObj : videogameInterfaceModel)=>{
     let genreslist : Array<genre>= new Array<genre>();

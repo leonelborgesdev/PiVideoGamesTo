@@ -14,7 +14,17 @@ export const getAllVideogames =async ( req : Request, res : Response )=>{
         if (allVideogames.length === 0) {
             const apikeyVideogame = process.env.apikeyVideogame ? process.env.apikeyVideogame.toString() : "";
             const videogamesApi= await getVideoGamesApi(apikeyVideogame)
-            return res.status(200).json(videogamesApi)
+            if (videogamesApi.ok) {
+                return res.status(200).json({
+                    ok: true,
+                    videogames: videogamesApi.listVideogame
+                })
+            }else{
+                return res.status(400).json({
+                    ok: false,
+                    message : videogamesApi.message
+                })
+            }
         }
         return res.status(200).json({
             ok: true,
@@ -44,10 +54,14 @@ export const createVideogame = async( req : Request, res: Response )=>{
     let genreslist : Array<genre>= new Array<genre>();
     await genres.map(async ( genreReq : string )=>{
         const genreEnt = await genre.findOneBy({ nombre : genreReq})
-        const genreEntityObj = new genre()
-        genreEntityObj.id= genreEnt?.id ? genreEnt.id : ""
-        genreEntityObj.nombre= genreEnt?.nombre ? genreEnt.nombre : ""
-        genreslist.push(genreEntityObj);
+        if (genreEnt) {
+            const genreEntityObj = new genre()
+            genreEntityObj.id= genreEnt?.id ? genreEnt.id : ""
+            genreEntityObj.nombre= genreEnt?.nombre ? genreEnt.nombre : ""
+            genreslist.push(genreEntityObj);
+        }else{
+            return res.status(400).json({ ok : false, message : `El genero ${genreReq} no existe en la base de datos`})
+        }
     })
     const validateName= await videogame.findOneBy({ nombre : name})
     if (validateName) {
