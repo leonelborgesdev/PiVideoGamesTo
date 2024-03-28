@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { getAllVideogames } from "../controllers/videogame.controller";
+import { createVideogame, getAllVideogames } from "../controllers/videogame.controller";
 
 const router= Router()
 
-router.get('/videogames',getAllVideogames)
+router.get('/videogames', getAllVideogames)
+
+router.post('/videogames', createVideogame)
 
 export default router;

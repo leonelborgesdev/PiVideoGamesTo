@@ -31,21 +31,28 @@ export const getAllVideogames =async ( req : Request, res : Response )=>{
 export const createVideogame = async( req : Request, res: Response )=>{
     const { id, name, descripcion , background_image, rating, released, platforms, genres }=req.body
     let genreslist : Array<genre>= new Array<genre>();
-    genres.map(async ( genreReq : string )=>{
+    await genres.map(async ( genreReq : string )=>{
         const genreEnt = await genre.findOneBy({ nombre : genreReq})
         const genreEntityObj = new genre()
         genreEntityObj.id= genreEnt?.id ? genreEnt.id : ""
         genreEntityObj.nombre= genreEnt?.nombre ? genreEnt.nombre : ""
-        genreslist.push(genreEntityObj)
+        genreslist.push(genreEntityObj);
     })
-    const ObjectVideoGame=new videogame();                                
-    ObjectVideoGame.id= id.toString()
-    ObjectVideoGame.nombre= name
-    ObjectVideoGame.image = background_image
-    ObjectVideoGame.rating = rating
-    ObjectVideoGame.fecha_lanzamiento = released
-    ObjectVideoGame.plataformas = platforms
-    ObjectVideoGame.descripcion = descripcion
-    ObjectVideoGame.genres = genreslist
-    // await ObjectVideoGame.save()
+    const validateName= await videogame.findOneBy({ nombre : name})
+    console.log("validatename",validateName)
+    if (validateName) {
+        return res.status(200).json({ ok : false, message : `El video juego ${name} ya existe`})
+    }else{
+        const ObjectVideoGame=new videogame();                                
+        ObjectVideoGame.id= id.toString()
+        ObjectVideoGame.nombre= name
+        ObjectVideoGame.image = background_image
+        ObjectVideoGame.rating = rating
+        ObjectVideoGame.fecha_lanzamiento = released
+        ObjectVideoGame.plataformas = platforms
+        ObjectVideoGame.descripcion = descripcion
+        ObjectVideoGame.genres = genreslist
+        const videogameAdd = await ObjectVideoGame.save()
+        return res.status(200).json({ok: true, videogameAdd})
+    }
 }
