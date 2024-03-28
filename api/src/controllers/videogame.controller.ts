@@ -39,14 +39,21 @@ export const getAllVideogames =async ( req : Request, res : Response )=>{
 }
 
 export const getVideoGameById = async ( req : Request, res : Response ) =>{
-    const { id }= req.params;
-    const videoGameByid= await videogame.findOne({
-         where : [ { id } ],
-         relations: {
-            genres: true,
-            }
-        })
-    return res.status(200).json({ ok : true, videoGameByid})
+    try {
+        const { id }= req.params;
+        const videoGameByid= await videogame.findOne({
+             where : [ { id } ],
+             relations: {
+                genres: true,
+                }
+            })
+        return res.status(200).json({ ok : true, videoGameByid})
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log(error)
+            return res.status(500).json({message: error.message})
+        }        
+    }
 }
 
 export const createVideogame = async( req : Request, res: Response )=>{
