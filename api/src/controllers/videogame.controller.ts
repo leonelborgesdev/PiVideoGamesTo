@@ -30,8 +30,12 @@ export const getAllVideogames =async ( req : Request, res : Response )=>{
 
 export const getVideoGameById = async ( req : Request, res : Response ) =>{
     const { id }= req.params;
-    console.log(id)
-    const videoGameByid= await videogame.findBy({ id })
+    const videoGameByid= await videogame.findOne({
+         where : [ { id } ],
+         relations: {
+            genres: true,
+            }
+        })
     return res.status(200).json({ ok : true, videoGameByid})
 }
 
