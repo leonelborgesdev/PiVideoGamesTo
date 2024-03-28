@@ -28,6 +28,13 @@ export const getAllVideogames =async ( req : Request, res : Response )=>{
     }
 }
 
+export const getVideoGameById = async ( req : Request, res : Response ) =>{
+    const { id }= req.params;
+    console.log(id)
+    const videoGameByid= await videogame.findBy({ id })
+    return res.status(200).json({ ok : true, videoGameByid})
+}
+
 export const createVideogame = async( req : Request, res: Response )=>{
     const { id, name, descripcion , background_image, rating, released, platforms, genres }=req.body
     let genreslist : Array<genre>= new Array<genre>();
